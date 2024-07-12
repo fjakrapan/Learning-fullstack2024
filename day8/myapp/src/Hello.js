@@ -1,10 +1,27 @@
 import axios from 'axios';
+import config from './config';
+import { useState } from 'react';
 
 function Hello() {
-  const getMethod = async () => {
+  const [fileSeleted, setFileSelected] = useState({});
+
+  const seletedFile = (fileInput) => {
+    if (fileInput !== undefined) {
+      if (fileInput.length > 0) {
+        setFileSelected(fileInput[0]);
+      }
+    }
+  };
+
+  const uploadFile = async () => {
     try {
-      await axios.post('http://localhost:3001/book/search', {
-        keyword: 'a',
+      const formData = new FormData();
+      formData.append('myFile', fileSeleted);
+
+      await axios.post(config.apiPath + '/book/testUpload/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
     } catch (e) {
       console.log(e);
@@ -14,8 +31,9 @@ function Hello() {
   return (
     <>
       <div>
-        <button className="btn btn-primary" onClick={getMethod}>
-          Call API{' '}
+        <input type="file" onChange={(e) => seletedFile(e.target.files)} />{' '}
+        <button className="btn btn-primary" onClick={uploadFile}>
+          Upload Now{' '}
         </button>{' '}
       </div>{' '}
     </>
@@ -23,5 +41,3 @@ function Hello() {
 }
 
 export default Hello;
-
-//จบวันที่ 10 สไลด์ ที่293
